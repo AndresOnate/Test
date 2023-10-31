@@ -1,18 +1,20 @@
 package edu.eci.arsw.typefight.model;
 
-import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Player {
     private String name;
     private String color;
-    private int health;
-    private int points;
+    private AtomicInteger health;
+    private AtomicInteger points;
+    private boolean alive;
 
     public Player(String name, String color){
         this.name = name;
         this.color = color;
-        health = 100;
-        points = 0;
+        health = new AtomicInteger(100);
+        points = new AtomicInteger(0);
+        alive = true;
 
     }
 
@@ -32,24 +34,41 @@ public class Player {
         this.color = color;
     }
 
-    public int getHealth() {
+    public AtomicInteger getHealth() {
         return health;
     }
 
-    public void setHealth(int health) {
+    public void setHealth(AtomicInteger health) {
         this.health = health;
     }
 
-    public int getPoints() {
+    public AtomicInteger getPoints() {
         return points;
     }
 
     public void setPoints(int points) {
-        this.points = points;
+        this.points.set(points);
     }
 
     public void addPoints(int points) {
-        this.points += points;
+        this.points.addAndGet(points);
+    }
+
+    public void decreaseHealth(int damage){
+        if (health.get() - damage <= 0) {
+            setAlive(false);
+            health.set(0);
+        } else {
+            health.addAndGet(-damage);
+        }
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 
     @Override
