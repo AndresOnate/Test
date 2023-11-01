@@ -49,6 +49,23 @@ var app = (function () {
         };
     };
 
+    const listenerForWritting = function (event) {
+        if (event.key.length === 1) {
+            // Solo se procesa la entrada si es una letra (no se procesan teclas especiales, números, etc.).
+            const currentWord = userWord.textContent;
+            const newWord = currentWord + event.key;
+            userWord.textContent = newWord;
+        } else if (event.key === "Backspace") {
+            // Manejar la tecla de retroceso (Backspace) para borrar la última letra.
+            const currentWord = userWord.textContent;
+            const newWord = currentWord.slice(0, -1); // Elimina el último carácter.
+            userWord.textContent = newWord;
+        } else if (event.key === "Enter") {
+            // publicar palabra cuando se presiona Enter.
+            app.publishWrittenWord(userWord.textContent);
+        }
+    };
+
     var displayCurrentWords = function () {
         var wordGridContainer = document.getElementById("wordGridContainer");
         currentWords.forEach(function (word) {
@@ -115,30 +132,30 @@ var app = (function () {
             });
             stompClient.subscribe('/topic/updateHealth.' + username, function (eventbody) {
                 life = eventbody.body
+                if (life <= 0) {
+                    document.removeEventListener("keydown", listenerForWritting);
+                }
                 updateLifeBar();
+
+
             });
+            stompClient.subscribe('/topic/thereIsAWinner', function (eventbody) {
+                var theWinner = JSON.parse(eventbody.body);
+                var playerName = theWinner.name;
+                var message = "El ganador es: " + playerName ;
+                alert(message);
+
+                // Redirige a otra página después de que el usuario haga clic en "Aceptar" en el alert
+                window.location.href = 'ranking.html';
+            });
+
         });
     };
     
     
     return {
         addListeners: function () {
-            document.addEventListener("keydown", function(event) {
-                if (event.key.length === 1) {
-                    // Solo se procesa la entrada si es una letra (no se procesan teclas especiales, números, etc.).
-                    const currentWord = userWord.textContent;
-                    const newWord = currentWord + event.key;
-                    userWord.textContent = newWord;
-                } else if (event.key === "Backspace") {
-                    // Manejar la tecla de retroceso (Backspace) para borrar la última letra.
-                    const currentWord = userWord.textContent;
-                    const newWord = currentWord.slice(0, -1); // Elimina el último carácter.
-                    userWord.textContent = newWord;
-                } else if (event.key === "Enter") {
-                    // publicar palabra cuando se presiona Enter.
-                    app.publishWrittenWord(userWord.textContent);
-                }
-            });            
+            document.addEventListener("keydown", listenerForWritting);
         },
 
         init: function (newSession) {

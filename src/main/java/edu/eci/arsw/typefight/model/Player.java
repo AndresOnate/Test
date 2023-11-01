@@ -12,7 +12,7 @@ public class Player {
     public Player(String name, String color){
         this.name = name;
         this.color = color;
-        health = new AtomicInteger(100);
+        health = new AtomicInteger(20);
         points = new AtomicInteger(0);
         alive = true;
 

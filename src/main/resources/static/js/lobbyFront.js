@@ -62,12 +62,18 @@ function addNames () {
 var haveButton = false;
 function addButtonToPlay () {
     if (!haveButton) {
-        var myButton = $("<button></button>");
+        var myButton = $("<button id='button-to-start'></button>");
         myButton.text("Jugar");
         myButton.attr('type', 'button');
-        myButton.attr('onclick', 'lobby.publishPlay()');
+        //myButton.attr('onclick', 'lobby.publishPlay()');
         $("#button-to-play").append(myButton);
         haveButton = true;
+        myButton.click(function() {
+            // Realiza alguna acción cuando se hace clic en el botón.
+            lobby.publishPlay();
+            // Deshabilita el botón con jQuery
+            $(this).prop("disabled", true);
+        });
     }
 }
 

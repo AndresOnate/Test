@@ -13,7 +13,6 @@ var lobby = (function () {
                 console.log('Connected: ' + frame);
                 stompClient.subscribe('/topic/newentry', function (eventbody) {
                     var theObject=JSON.parse(eventbody.body);
-                    console.log(theObject);
                     setPlayersNumber(theObject.length, theObject);
                 });
 
@@ -22,8 +21,10 @@ var lobby = (function () {
                 });
 
                 stompClient.subscribe('/topic/gotoplay', function (eventbody) {
-                    window.location.href = "index.html";
+                    window.location.href = "play.html";
                 });
+
+
                 resolve(); // Resuelve la promesa cuando la conexión está lista
             });
         });

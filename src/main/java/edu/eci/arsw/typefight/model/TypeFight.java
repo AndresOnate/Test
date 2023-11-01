@@ -86,10 +86,12 @@ public class TypeFight {
 
     public List<Player> getSortedPlayers() {
         List<Player> playerList = new ArrayList<>(players.values());
-        playerList.sort(Comparator.comparing(Player::getHealth, (life1, life2) -> life2.get() - life1.get()));
+        playerList.sort(Comparator.comparing(Player::getPoints, (points1, points2) -> points2.get() - points1.get())
+                .thenComparing(Player::getHealth, (life1, life2) -> life2.get() - life1.get())
+        );
         return playerList;
     }
-    
+
     @Override
     public String toString() {
         return "TypeFight{" +
@@ -99,7 +101,7 @@ public class TypeFight {
     }
 
     public void addRandomWord(String word) {
-        if(currentWords.size() < MAX_CURRENT_WORDS){
+        if(currentWords.size() < MAX_CURRENT_WORDS && !currentWords.contains(word)){
             currentWords.add(word);
         }
     }
